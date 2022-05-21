@@ -39,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
         viewAll();
         UpdateData();
         DeleteDate();
+
+
+
     }
 
     //데이터 추가하기
@@ -72,13 +75,13 @@ public class MainActivity extends AppCompatActivity {
 
                 StringBuffer buffer = new StringBuffer();
                 while(res.moveToNext()){
-                    buffer.append("ID: " + res.getString(0) + "\n");
+                    buffer.append("\n트레이너 식별번호: " + res.getString(0) + "\n");
                     buffer.append("이름: " + res.getString(1) + "\n");
                     buffer.append("전화번호: " + res.getString(2) + "\n");
                     buffer.append("주소: " + res.getString(3) + "\n\n");
 
                 }
-                ShowMessage("데이터", buffer.toString());
+                ShowMessage("                   트레이너 목록", buffer.toString());
 
             }
         });
