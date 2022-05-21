@@ -1,10 +1,8 @@
 package com.example.sqlite_ex;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,8 +13,8 @@ public class MainActivity extends AppCompatActivity {
 
     DatabaseHelper myDB;
 
-    EditText editTextName, editTextPhone, editTextAddress, editTextID;
-    Button buttonInsert, buttonView, buttonUpdate, buttonDelete;
+    EditText editTextName, editTextPhone, editTextAddress;
+    Button buttonInsert, btn_Back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,21 +26,26 @@ public class MainActivity extends AppCompatActivity {
         editTextName = findViewById(R.id.editTextName);
         editTextPhone = findViewById(R.id.editTextPhone);
         editTextAddress = findViewById(R.id.editTextAddress);
-        editTextID = findViewById(R.id.editTextID);
 
         buttonInsert = findViewById(R.id.buttonInsert);
-        buttonView = findViewById(R.id.buttonView);
-        buttonUpdate = findViewById(R.id.buttonUpdate);
-        buttonDelete = findViewById(R.id.buttonDelete);
+        btn_Back = findViewById(R.id.btn_Back);
 
         AddData();
-        viewAll();
-        UpdateData();
-        DeleteDate();
-
-
+        GO_Back_UI();
 
     }
+
+    //뒤로가기 버튼을 눌렸을 때
+    public void GO_Back_UI(){
+        btn_Back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, TrainerManage.class);
+                startActivity(intent);
+            }
+        });
+    }
+
 
     //데이터 추가하기
     public void AddData(){
@@ -53,79 +56,15 @@ public class MainActivity extends AppCompatActivity {
                         editTextPhone.getText().toString(),
                         editTextAddress.getText().toString());
 
-                if(isInserted == true)
+                if(isInserted == true){
                     Toast.makeText(MainActivity.this, "데이터추가 성공", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, TrainerManage.class);
+                    startActivity(intent);
+                }
                 else
                     Toast.makeText(MainActivity.this, "데이터 추가실패", Toast.LENGTH_SHORT).show();
 
             }
         });
-    }
-
-    // 데이터 읽어오기
-    public void viewAll(){
-        buttonView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Cursor res = myDB.getAllData();
-                if(res.getCount() == 0){
-                    ShowMessage("실패", "데이터를 찾을 수 없습니다.");
-                    return;
-                }
-
-                StringBuffer buffer = new StringBuffer();
-                while(res.moveToNext()){
-                    buffer.append("\n트레이너 식별번호: " + res.getString(0) + "\n");
-                    buffer.append("이름: " + res.getString(1) + "\n");
-                    buffer.append("전화번호: " + res.getString(2) + "\n");
-                    buffer.append("주소: " + res.getString(3) + "\n\n");
-
-                }
-                ShowMessage("                   트레이너 목록", buffer.toString());
-
-            }
-        });
-    }
-
-
-    //데이터베이스 수정하기
-    public void UpdateData(){
-        buttonUpdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean isUpdated = myDB.updateData(editTextID.getText().toString(),
-                        editTextName.getText().toString(),
-                        editTextPhone.getText().toString(),
-                        editTextAddress.getText().toString());
-
-                if (isUpdated == true)
-                    Toast.makeText(MainActivity.this, "데이터 수정 성공", Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(MainActivity.this, "데이터 수정 실패", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-    }
-
-    //데이터베이스 삭제하기
-    public void DeleteDate(){
-        buttonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Integer deleteRows = myDB.deleteData(editTextID.getText().toString());
-                if(deleteRows > 0)
-                    Toast.makeText(MainActivity.this, "데이터 삭제 성공", Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(MainActivity.this, "데이터 삭제 실패", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-    }
-    public void ShowMessage(String title, String Message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(Message);
-        builder.show();
     }
 }
